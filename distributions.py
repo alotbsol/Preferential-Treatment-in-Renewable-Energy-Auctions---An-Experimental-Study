@@ -4,7 +4,7 @@ from math import log
 import numpy as np
 
 
-class GenerateDistributions:
+class DistributionGenerator:
     def __init__(self, min_ws=5, max_ws=9, base_lcoe=50):
         self.min_ws = min_ws
         self.max_ws = max_ws
@@ -135,7 +135,7 @@ class GenerateDistributions:
 
 
 if __name__ == '__main__':
-    Distributions = GenerateDistributions()
+    Distributions = DistributionGenerator()
     print(Distributions.distribution)
 
     exporter.export_data(input_data=Distributions.distribution, name="test")
