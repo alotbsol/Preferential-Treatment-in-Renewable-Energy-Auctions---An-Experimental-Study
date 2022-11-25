@@ -1,6 +1,6 @@
 import pandas as pd
 
-
+"""This function exports any input data to an excel file"""
 def export_data(input_data, name):
     writer = pd.ExcelWriter("{0}.xlsx".format(name), engine="xlsxwriter")
 

@@ -3,7 +3,7 @@ import exporter
 from math import log
 import numpy as np
 
-
+"""This class generates all wind speeds and related parameters, i.e., correction factor and lcoe"""
 class DistributionGenerator:
     def __init__(self, min_ws=5, max_ws=9, base_lcoe=50):
         self.min_ws = min_ws
@@ -24,7 +24,7 @@ class DistributionGenerator:
         self.correction_factors = {0.7: 1.29, 0.8: 1.16, 0.9: 1.07, 1: 1, 1.1: 0.94, 1.2: 0.89, 1.3: 0.85, 1.4: 0.81,
                                    1.5: 0.79}
 
-        self.reference_production = self.calc_production(ws_input=self.calculate_wsHH(ws100_input=6.45)) \
+        self.reference_production = self.calc_production(ws_input=self.calculate_ws_hh(ws100_input=6.45)) \
                                     / self.installed_capacity
 
         self.distribution = {"ws": [],
@@ -40,7 +40,7 @@ class DistributionGenerator:
         self.create_ws_dist()
 
         for i in self.distribution["ws"]:
-            self.distribution["production"].append(self.calc_production(ws_input=self.calculate_wsHH(ws100_input=i))
+            self.distribution["production"].append(self.calc_production(ws_input=self.calculate_ws_hh(ws100_input=i))
                                                    / self.installed_capacity)
 
         for i in self.distribution["production"]:
@@ -53,7 +53,6 @@ class DistributionGenerator:
         for i in self.distribution["extra_correction_factor"]:
             self.distribution["lcoe"].append(i*self.base_lcoe)
 
-
     def create_ws_dist(self):
         scale = 10
 
@@ -62,7 +61,7 @@ class DistributionGenerator:
 
         self.distribution["ws"] = generated_list
 
-    def calculate_wsHH(self, ws100_input):
+    def calculate_ws_hh(self, ws100_input):
         reference_hub = 100
         roughness_length = 0.1
 
