@@ -1,11 +1,8 @@
-import random
-random.seed(a=1618033)
 
-def random_printing(no):
+dic = {'player4': 77.26, 'player3': 77.71, 'player2': 78.03}
 
-    for i in range(0, no):
-        print(random.random())
+if "player1" in dic:
+    print("yes")
+else:
+    print("no")
 
-
-random_printing(no=2)
-random_printing(no=2)
