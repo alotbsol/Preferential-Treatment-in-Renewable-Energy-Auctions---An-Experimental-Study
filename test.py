@@ -6,3 +6,5 @@ if "player1" in dic:
 else:
     print("no")
 
+for i in range(4):
+    print(i+1)

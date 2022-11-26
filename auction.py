@@ -33,7 +33,7 @@ class AuctionGenerator:
                                 "rym": [],
                                 }
 
-        self.number_of_groups = active_players/supply
+        self.number_of_groups = int(active_players/supply)
         self.groups = {}
 
         self.current_round = 0
@@ -70,7 +70,15 @@ class AuctionGenerator:
                                                   current_round=self.current_round)
 
     def split_players(self):
-        shuffled_players = random.shuffle(self.players_dic.keys())
+        shuffled_players = random.shuffle(list(self.players_dic.keys()))
+        print("SHUV", shuffled_players)
+        groups = {}
+
+        for i in range(self.number_of_groups):
+            groups[str(i+1)] = shuffled_players[i * self.supply : i * self.supply + self.supply]
+            print(i)
+
+        print("splitting players", groups)
 
 
 
@@ -99,7 +107,7 @@ class AuctionGenerator:
 
 
 if __name__ == '__main__':
-    Auctions = AuctionGenerator(active_players=4)
+    Auctions = AuctionGenerator(active_players=8)
     print("players dictionary", Auctions.players_dic)
 
     Auctions.generate_parameters()
@@ -112,6 +120,9 @@ if __name__ == '__main__':
        print("placed bid:", i, Auctions.players_dic[i].my_bid)
 
     Auctions.evaluate_round()
+
+    Auctions.split_players()
+
 
 
 
