@@ -5,11 +5,18 @@ import random as random
 
 
 class AuctionGenerator:
-    def __init__(self, active_players=16, rym=0, random_seed=1618033):
+    def __init__(self, active_players=16, rym=0, ws_min=5, ws_max=9, oc_min=0.8, oc_max=1.2, random_seed=1618033):
         random.seed(a=random_seed)
 
         self.active_players = active_players
         self.rym = rym
+
+        self.ws_min = ws_min
+        self.ws_max = ws_max
+        self.oc_min = oc_min
+        self.oc_max = oc_max
+
+        InputDistribution = DistributionGenerator(min_ws=ws_min, max_ws=ws_max, base_lcoe=50)
 
         self.players_dic = {}
         self.results_storage = {}
@@ -22,8 +29,12 @@ class AuctionGenerator:
 
     def generate_parameters(self):
         for i in self.players_dic:
-            ws = random.random()
-            other_costs = random.random()
+            ws = random.randint(self.ws_min * 10, self.ws_max * 10) / 10
+            other_costs = random.randint(self.oc_min * 100, self.oc_max * 100) / 100
+            """ Needs to be loaded from original distributions"""
+
+            # list.index(element, start, end)
+
             lcoe = random.random()
             correction_factor = random.random()
             minimum_bid = random.random()

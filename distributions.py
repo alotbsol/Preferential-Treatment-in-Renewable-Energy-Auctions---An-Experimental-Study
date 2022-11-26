@@ -3,8 +3,9 @@ import exporter
 from math import log
 import numpy as np
 
-"""This class generates all wind speeds and related parameters, i.e., correction factor and lcoe"""
+
 class DistributionGenerator:
+    """This class generates all wind speeds and related parameters, i.e., correction factor and lcoe"""
     def __init__(self, min_ws=5, max_ws=9, base_lcoe=50):
         self.min_ws = min_ws
         self.max_ws = max_ws
