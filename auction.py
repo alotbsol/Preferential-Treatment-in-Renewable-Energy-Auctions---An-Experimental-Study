@@ -67,6 +67,9 @@ class AuctionGenerator:
             self.results_storage[str(i + 1)]["players_profit"] = []
             self.results_storage[str(i + 1)]["players_production"] = []
 
+            self.results_storage[str(i + 1)]["highest_suc"] = []
+            self.results_storage[str(i + 1)]["lowest_suc"] = []
+
             for ii in range(self.supply):
                 self.results_storage[str(i + 1)]["slot"+str(ii + 1)+"_player"] = []
                 self.results_storage[str(i + 1)]["slot" + str(ii + 1) + "_bid"] = []
@@ -141,8 +144,8 @@ class AuctionGenerator:
 
                 self.players_dic[ii].store_round(win=win,
                                                  supply=self.supply, demand=self.demand, rym=self.rym,
-                                                 highest_suc=max(self.winning_bids[i].items()),
-                                                 lowest_suc=min(self.winning_bids[i].items()))
+                                                 highest_suc=max(self.winning_bids[i].values()),
+                                                 lowest_suc=min(self.winning_bids[i].values()))
 
     def store_round_results(self):
         for i in self.groups:
@@ -177,6 +180,8 @@ class AuctionGenerator:
             self.results_storage[str(i)]["players_subsidy"].append(subsidy)
             self.results_storage[str(i)]["players_profit"].append(profit)
             self.results_storage[str(i)]["players_production"].append(production)
+            self.results_storage[str(i)]["highest_suc"].append(max(self.winning_bids[i].values()))
+            self.results_storage[str(i)]["lowest_suc"].append(min(self.winning_bids[i].values()))
 
             for ii in range(self.supply):
                 player = self.groups[i][ii]
@@ -200,4 +205,10 @@ class AuctionGenerator:
             df_out.to_excel(writer, sheet_name=str(i))
 
         writer.save()
+
+    def change_rym_parameter(self, rym):
+        self.rym = rym
+
+    def change_demand_parameter(self, demand):
+        self.demand = demand
 
