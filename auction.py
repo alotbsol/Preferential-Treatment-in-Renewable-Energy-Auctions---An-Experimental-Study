@@ -28,10 +28,7 @@ class AuctionGenerator:
         self.InputDistribution = DistributionGenerator(min_ws=ws_min, max_ws=ws_max, base_lcoe=50)
 
         self.players_dic = {}
-        self.results_storage = {"supply": [],
-                                "demand": [],
-                                "rym": [],
-                                }
+        self.results_storage = {}
 
         self.number_of_groups = int(active_players/supply)
         self.groups = {}
@@ -39,12 +36,41 @@ class AuctionGenerator:
         self.current_round = 0
 
         self.generate_players()
+        self.generate_storage()
 
     def generate_players(self):
         for i in range(1, self.active_players + 1):
             self.players_dic["player{0}".format(i)] = Player()
 
         self.current_round += 1
+
+    def generate_storage(self):
+        for i in range(self.number_of_groups):
+            self.results_storage[str(i + 1)] = {}
+            self.results_storage[str(i + 1)]["round"] = []
+            self.results_storage[str(i + 1)]["supply"] = []
+            self.results_storage[str(i + 1)]["demand"] = []
+            self.results_storage[str(i + 1)]["rym"] = []
+
+            self.results_storage[str(i + 1)]["NoRYM_model_subsidy_min"] = []
+            self.results_storage[str(i + 1)]["NoRYM_model_subsidy"] = []
+            self.results_storage[str(i + 1)]["NoRYM_model_profit"] = []
+            self.results_storage[str(i + 1)]["NoRYM_model_production"] = []
+
+            self.results_storage[str(i + 1)]["RYM_model_subsidy_min"] = []
+            self.results_storage[str(i + 1)]["RYM_model_subsidy"] = []
+            self.results_storage[str(i + 1)]["RYM_model_profit"] = []
+            self.results_storage[str(i + 1)]["RYM_model_production"] = []
+
+            self.results_storage[str(i + 1)]["players_subsidy"] = []
+            self.results_storage[str(i + 1)]["players_profit"] = []
+            self.results_storage[str(i + 1)]["players_production"] = []
+
+
+
+        print("result storage", self.results_storage)
+
+
 
     def generate_parameters(self):
         for i in self.players_dic:
@@ -70,19 +96,15 @@ class AuctionGenerator:
                                                   current_round=self.current_round)
 
     def split_players(self):
-        shuffled_players = random.shuffle(list(self.players_dic.keys()))
-        print("SHUV", shuffled_players)
+        shuffled_players = list(self.players_dic.keys())
+        random.shuffle(shuffled_players)
+
         groups = {}
 
         for i in range(self.number_of_groups):
             groups[str(i+1)] = shuffled_players[i * self.supply : i * self.supply + self.supply]
-            print(i)
 
         print("splitting players", groups)
-
-
-
-
 
 
     def update_demand_supply(self, demand, supply):
@@ -107,7 +129,7 @@ class AuctionGenerator:
 
 
 if __name__ == '__main__':
-    Auctions = AuctionGenerator(active_players=8)
+    Auctions = AuctionGenerator(active_players=16)
     print("players dictionary", Auctions.players_dic)
 
     Auctions.generate_parameters()
