@@ -109,7 +109,7 @@ class AuctionGenerator:
         groups = {}
 
         for i in range(self.number_of_groups):
-            groups[str(i+1)] = shuffled_players[i * self.supply : i * self.supply + self.supply]
+            groups[str(i+1)] = shuffled_players[i * self.supply: i * self.supply + self.supply]
 
         self.groups = groups
 
@@ -211,4 +211,7 @@ class AuctionGenerator:
 
     def change_demand_parameter(self, demand):
         self.demand = demand
+
+    def change_maximum_bid(self, maximum_bid):
+        self.maximum_bid = maximum_bid
 
