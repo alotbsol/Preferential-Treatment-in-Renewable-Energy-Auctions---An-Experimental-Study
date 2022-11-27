@@ -1,5 +1,4 @@
-import exporter
-
+import pandas as pd
 from math import log
 import numpy as np
 
@@ -134,10 +133,27 @@ class DistributionGenerator:
                 return correction_factor
 
 
+def export_data(input_data, name):
+    """This function exports any input data to an excel file"""
+    writer = pd.ExcelWriter("{0}.xlsx".format(name), engine="xlsxwriter")
+
+    if isinstance(input_data, pd.DataFrame):
+        input_data.to_excel(writer, sheet_name="data")
+
+    elif isinstance(input_data, dict):
+        df_out = pd.DataFrame.from_dict(input_data)
+        df_out.to_excel(writer, sheet_name="data")
+
+    else:
+        print("Unknown format for export")
+
+    writer.save()
+
+
 if __name__ == '__main__':
     Distributions = DistributionGenerator()
     print(Distributions.distribution)
 
-    exporter.export_data(input_data=Distributions.distribution, name="test")
+    export_data(input_data=Distributions.distribution, name="test")
 
 

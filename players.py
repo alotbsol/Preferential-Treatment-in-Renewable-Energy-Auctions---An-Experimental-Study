@@ -5,6 +5,7 @@ class Player:
     def __init__(self, ):
         # specific project parameters
         self.parameters = {"ws": 0,
+                           "production": 0,
                            "other_costs": 0,
                            "lcoe": 0,
                            "correction_factor": 0,
@@ -26,6 +27,8 @@ class Player:
         self.my_bid = 0
         self.potential_subsidy = 0
         self.potential_profit = 0
+        self.subsidy = 0
+        self.profit = 0
 
         # history of auctions and bids
         self.history = {"round": [],
@@ -35,6 +38,7 @@ class Player:
                         "demand": [],
                         "rym": [],
                         "ws": [],
+                        "production": [],
                         "other_costs": [],
                         "lcoe": [],
                         "correction_factor": [],
@@ -46,12 +50,13 @@ class Player:
                         "lowest_suc": [],
                         }
 
-    def update_parameters(self, ws, other_costs, lcoe, correction_factor, minimum_bid,
+    def update_parameters(self, ws, production, other_costs, lcoe, correction_factor, minimum_bid,
                           rym, maximum_bid, demand, supply, current_round):
         """updating project parameters based on new draw from probability distribution, calculation in
         AuctionGenerator class"""
 
         self.parameters["ws"] = ws
+        self.parameters["production"] = production
         self.parameters["other_costs"] = other_costs
         self.parameters["lcoe"] = lcoe
         self.parameters["correction_factor"] = correction_factor
@@ -102,17 +107,24 @@ class Player:
         self.history["demand"].append(demand)
         self.history["rym"].append(rym)
         self.history["ws"].append(self.parameters["ws"])
+        self.history["production"].append(self.parameters["production"])
         self.history["other_costs"].append(self.parameters["other_costs"])
         self.history["lcoe"].append(self.parameters["lcoe"])
         self.history["correction_factor"].append(self.parameters["correction_factor"])
         self.history["minimum_bid"].append(self.parameters["minimum_bid"])
-        self.history["bid"].append(self.parameters["bid"])
-        self.history["subsidy"].append(self.potential_subsidy * win)
-        self.history["profit"].append(self.potential_profit * win)
+        self.history["bid"].append(self.my_bid)
+
+        self.subsidy = self.potential_subsidy * win
+        self.history["subsidy"].append(self.subsidy)
+
+        self.profit = self.potential_profit * win
+        self.history["profit"].append(self.profit)
+
         self.history["highest_suc"].append(highest_suc)
         self.history["lowest_suc"].append(lowest_suc)
 
     def graph_project_input(self):
+        """here should be graph of position of specific players project within possible distribution"""
         pass
 
 
