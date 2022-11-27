@@ -25,5 +25,3 @@ if __name__ == '__main__':
 
     Auctions.export_everything(name="example_scenario")
 
-    # change rym
-    # change demand
