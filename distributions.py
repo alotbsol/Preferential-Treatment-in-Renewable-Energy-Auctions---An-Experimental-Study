@@ -5,10 +5,13 @@ import numpy as np
 
 class DistributionGenerator:
     """This class generates all wind speeds and related parameters, i.e., correction factor and lcoe"""
-    def __init__(self, min_ws=5, max_ws=9, base_lcoe=50):
+    def __init__(self, min_ws=5, max_ws=9, base_lcoe=50, oc_min=0.8, oc_max=1.2):
         self.min_ws = min_ws
         self.max_ws = max_ws
         self.base_lcoe = base_lcoe
+        self.oc_min = oc_min
+        self.oc_max = oc_max
+
         self.hub_height = 128
         self.installed_capacity = 3
         self.losses = 0.8
@@ -32,7 +35,9 @@ class DistributionGenerator:
                              "site_quality": [],
                              "correction_factor": [],
                              "extra_correction_factor": [],
-                             "lcoe": []}
+                             "lcoe": [],
+                             "min_lcoe": [],
+                             "max_lcoe": []}
 
         self.calc_distribution()
 
@@ -52,6 +57,10 @@ class DistributionGenerator:
 
         for i in self.distribution["extra_correction_factor"]:
             self.distribution["lcoe"].append(i*self.base_lcoe)
+
+        for i in self.distribution["lcoe"]:
+            self.distribution["min_lcoe"].append(i * self.oc_min)
+            self.distribution["max_lcoe"].append(i * self.oc_max)
 
     def create_ws_dist(self):
         scale = 10

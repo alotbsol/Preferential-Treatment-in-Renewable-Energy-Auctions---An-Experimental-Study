@@ -1,9 +1,13 @@
 import random
+import matplotlib.pyplot as plt
+import pandas as pd
 
 
 class Player:
-    def __init__(self, ):
+    def __init__(self, my_name):
         # specific project parameters
+        self.my_name = my_name
+
         self.parameters = {"ws": 0,
                            "production": 0,
                            "other_costs": 0,
@@ -49,6 +53,11 @@ class Player:
                         "highest_suc": [],
                         "lowest_suc": [],
                         }
+
+        self.distribution_df = ""
+
+    def pass_distribution(self, distribution):
+        self.distribution_df = pd.DataFrame.from_dict(distribution)
 
     def update_parameters(self, ws, production, other_costs, lcoe, correction_factor, minimum_bid,
                           rym, maximum_bid, demand, supply, current_round):
@@ -124,8 +133,19 @@ class Player:
         self.history["lowest_suc"].append(lowest_suc)
 
     def graph_project_input(self):
-        """here should be graph of position of specific players project within possible distribution"""
-        pass
+        """graph is saved to the directory not sure how to display it to all players in their workstation"""
+        color_map = ["#FFFFFF", "#8497B0"]
+
+        plt.figure(self.my_name)
+        plt.stackplot(self.distribution_df["ws"], [self.distribution_df["min_lcoe"],
+                      self.distribution_df["max_lcoe"] - self.distribution_df["min_lcoe"]],
+                      colors=color_map)
+
+        plt.plot(self.parameters["ws"], self.parameters["minimum_bid"], marker="o", markerfacecolor="red")
+        plt.grid()
+
+        plt.savefig(self.my_name)
+
 
 
 

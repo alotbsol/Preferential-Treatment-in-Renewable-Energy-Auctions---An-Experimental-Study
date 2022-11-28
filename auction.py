@@ -27,7 +27,8 @@ class AuctionGenerator:
         self.oc_min = oc_min
         self.oc_max = oc_max
 
-        self.InputDistribution = DistributionGenerator(min_ws=ws_min, max_ws=ws_max, base_lcoe=50)
+        self.InputDistribution = DistributionGenerator(min_ws=ws_min, max_ws=ws_max, base_lcoe=50,
+                                                       oc_min=oc_min, oc_max=oc_max)
 
         self.number_of_groups = int(active_players / supply)
         self.groups = {}
@@ -43,7 +44,8 @@ class AuctionGenerator:
 
     def generate_players(self):
         for i in range(1, self.active_players + 1):
-            self.players_dic["player{0}".format(i)] = Player()
+            self.players_dic["player{0}".format(i)] = Player(my_name="player{0}".format(i))
+            self.players_dic["player{0}".format(i)].pass_distribution(self.InputDistribution.distribution)
 
     def generate_storage(self):
         for i in range(self.number_of_groups):

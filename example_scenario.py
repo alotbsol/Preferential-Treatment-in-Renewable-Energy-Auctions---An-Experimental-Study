@@ -1,7 +1,7 @@
 from auction import AuctionGenerator
 
 
-if __name__ == '__main__':
+def all_parameters():
     Auctions = AuctionGenerator(active_players=16)
 
     for rym_mbid in [[0, 90.3], [1, 70]]:
@@ -24,4 +24,18 @@ if __name__ == '__main__':
                 Auctions.store_round_results()
 
     Auctions.export_everything(name="example_scenario")
+
+
+def example_figures():
+    Auctions = AuctionGenerator(active_players=4)
+    Auctions.generate_parameters()
+
+    for i in Auctions.players_dic:
+        Auctions.players_dic[i].graph_project_input()
+
+
+if __name__ == '__main__':
+    all_parameters()
+    example_figures()
+
 
