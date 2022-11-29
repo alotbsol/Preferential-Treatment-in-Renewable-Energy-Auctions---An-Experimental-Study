@@ -27,15 +27,22 @@ def all_parameters():
 
 
 def example_figures():
-    Auctions = AuctionGenerator(active_players=4)
+    Auctions = AuctionGenerator(active_players=4, rym=0)
     Auctions.generate_parameters()
 
     for i in Auctions.players_dic:
         Auctions.players_dic[i].graph_project_input()
 
 
+    Auctions2 = AuctionGenerator(active_players=2, rym=1)
+    Auctions2.generate_parameters()
+
+    for i in Auctions2.players_dic:
+        Auctions2.players_dic[i].graph_project_input()
+
+
 if __name__ == '__main__':
-    all_parameters()
+    """all_parameters()"""
     example_figures()
 
 

@@ -37,7 +37,9 @@ class DistributionGenerator:
                              "extra_correction_factor": [],
                              "lcoe": [],
                              "min_lcoe": [],
-                             "max_lcoe": []}
+                             "max_lcoe": [],
+                             "min_lcoe_rym": [],
+                             "max_lcoe_rym": [],}
 
         self.calc_distribution()
 
@@ -61,6 +63,12 @@ class DistributionGenerator:
         for i in self.distribution["lcoe"]:
             self.distribution["min_lcoe"].append(i * self.oc_min)
             self.distribution["max_lcoe"].append(i * self.oc_max)
+
+        for i in range(0, len(self.distribution["lcoe"])):
+            self.distribution["min_lcoe_rym"].append(self.distribution["lcoe"][i]/
+                                                     self.distribution["correction_factor"][i] * self.oc_min)
+            self.distribution["max_lcoe_rym"].append(self.distribution["lcoe"][i]/
+                                                     self.distribution["correction_factor"][i] * self.oc_max)
 
     def create_ws_dist(self):
         scale = 10

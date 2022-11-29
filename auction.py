@@ -206,6 +206,9 @@ class AuctionGenerator:
             df_out = pd.DataFrame.from_dict(self.players_dic[i].history)
             df_out.to_excel(writer, sheet_name=str(i))
 
+        df_out = pd.DataFrame.from_dict(self.InputDistribution.distribution)
+        df_out.to_excel(writer, sheet_name="parameters")
+
         writer.save()
 
     def change_rym_parameter(self, rym):

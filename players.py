@@ -1,6 +1,7 @@
 import random
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 
 class Player:
@@ -136,15 +137,44 @@ class Player:
         """graph is saved to the directory not sure how to display it to all players in their workstation"""
         color_map = ["#FFFFFF", "#8497B0"]
 
-        plt.figure(self.my_name)
-        plt.stackplot(self.distribution_df["ws"], [self.distribution_df["min_lcoe"],
-                      self.distribution_df["max_lcoe"] - self.distribution_df["min_lcoe"]],
-                      colors=color_map)
+        if self.rym == 1:
+            plt.figure(self.my_name)
+            plt.stackplot(self.distribution_df["ws"], [self.distribution_df["min_lcoe_rym"],
+                                                       self.distribution_df["max_lcoe_rym"] - self.distribution_df[
+                                                           "min_lcoe_rym"]],
+                          colors=color_map)
 
-        plt.plot(self.parameters["ws"], self.parameters["minimum_bid"], marker="o", markerfacecolor="red")
-        plt.grid()
+            plt.plot(self.parameters["ws"], self.parameters["minimum_bid"], marker="o", markerfacecolor="red")
+            plt.grid()
+            plt.xlim(min(self.distribution_df["ws"]), max(self.distribution_df["ws"]))
+            plt.ylim(35, 70)
+            plt.yticks(np.arange(35, 70, 5))
+            plt.title("Distribution of minimum bids and position of your project")
+            plt.xlabel("Wind speed")
+            plt.ylabel("Minimum bid EUR/MWh")
 
-        plt.savefig(self.my_name)
+
+            plt.savefig(self.my_name)
+            plt.close()
+
+        else:
+            plt.figure(self.my_name)
+            plt.stackplot(self.distribution_df["ws"], [self.distribution_df["min_lcoe"],
+                                                       self.distribution_df["max_lcoe"] - self.distribution_df[
+                                                           "min_lcoe"]],
+                          colors=color_map)
+
+            plt.plot(self.parameters["ws"], self.parameters["minimum_bid"], marker="o", markerfacecolor="red")
+            plt.grid()
+            plt.xlim(min(self.distribution_df["ws"]), max(self.distribution_df["ws"]))
+            plt.ylim(30, 90)
+            plt.yticks(np.arange(30, 90, 5))
+            plt.title("Distribution of minimum bids and position of your project")
+            plt.xlabel("Wind speed")
+            plt.ylabel("Minimum bid EUR/MWh")
+
+            plt.savefig(self.my_name)
+            plt.close()
 
 
 
