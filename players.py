@@ -142,9 +142,9 @@ class Player:
             plt.stackplot(self.distribution_df["ws"], [self.distribution_df["min_lcoe_rym"],
                                                        self.distribution_df["max_lcoe_rym"] - self.distribution_df[
                                                            "min_lcoe_rym"]],
-                          colors=color_map)
+                          colors=color_map, labels=["", "distribution of minimum bids"])
 
-            plt.plot(self.parameters["ws"], self.parameters["minimum_bid"], marker="o", markerfacecolor="red")
+            plt.plot(self.parameters["ws"], self.parameters["minimum_bid"], marker="o", markerfacecolor="red", label='my project')
             plt.grid()
             plt.xlim(min(self.distribution_df["ws"]), max(self.distribution_df["ws"]))
             plt.ylim(35, 70)
@@ -152,7 +152,7 @@ class Player:
             plt.title("Distribution of minimum bids and position of your project")
             plt.xlabel("Wind speed")
             plt.ylabel("Minimum bid EUR/MWh")
-
+            plt.legend()
 
             plt.savefig(self.my_name)
             plt.close()
@@ -162,9 +162,9 @@ class Player:
             plt.stackplot(self.distribution_df["ws"], [self.distribution_df["min_lcoe"],
                                                        self.distribution_df["max_lcoe"] - self.distribution_df[
                                                            "min_lcoe"]],
-                          colors=color_map)
+                          colors=color_map, labels=["", "distribution of minimum bids"])
 
-            plt.plot(self.parameters["ws"], self.parameters["minimum_bid"], marker="o", markerfacecolor="red")
+            plt.plot(self.parameters["ws"], self.parameters["minimum_bid"], marker="o", markerfacecolor="red", label='my project')
             plt.grid()
             plt.xlim(min(self.distribution_df["ws"]), max(self.distribution_df["ws"]))
             plt.ylim(30, 90)
@@ -172,6 +172,7 @@ class Player:
             plt.title("Distribution of minimum bids and position of your project")
             plt.xlabel("Wind speed")
             plt.ylabel("Minimum bid EUR/MWh")
+            plt.legend()
 
             plt.savefig(self.my_name)
             plt.close()
