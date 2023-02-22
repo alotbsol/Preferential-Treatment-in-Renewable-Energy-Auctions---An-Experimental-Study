@@ -13,8 +13,8 @@ def all_parameters():
 
             for itteration in range(100):
                 print("round", itteration)
-                Auctions.generate_parameters()
-                Auctions.split_players()
+                Auctions.generate_random_parameters()
+                Auctions.split_players_random()
 
                 for i in Auctions.players_dic:
                    Auctions.players_dic[i].place_random_bid()
@@ -28,21 +28,21 @@ def all_parameters():
 
 def example_figures():
     Auctions = AuctionGenerator(active_players=4, rym=0)
-    Auctions.generate_parameters()
+    Auctions.generate_random_parameters()
 
     for i in Auctions.players_dic:
         Auctions.players_dic[i].graph_project_input()
 
 
     Auctions2 = AuctionGenerator(active_players=2, rym=1)
-    Auctions2.generate_parameters()
+    Auctions2.generate_random_parameters()
 
     for i in Auctions2.players_dic:
         Auctions2.players_dic[i].graph_project_input()
 
 
 if __name__ == '__main__':
-    """all_parameters()"""
-    example_figures()
+    all_parameters()
+    """example_figures()"""
 
 

@@ -11,9 +11,6 @@ class AuctionGenerator:
                  maximum_bid=90.3, ws_min=5, ws_max=9, oc_min=0.8, oc_max=1.2,
                  random_seed=16180339):
 
-        """random seed needs to be changed, the whole process needs to be reproducible"""
-        random.seed(a=random_seed)
-
         self.active_players = active_players
         self.rym = rym
 
@@ -39,6 +36,12 @@ class AuctionGenerator:
         self.current_round = 0
         self.winning_bids = {}
 
+        self.no_rym_winning_bids_proxy = {}
+        self.no_rym_first_losing_proxy = {}
+
+        self.rym_winning_bids_proxy = {}
+        self.rym_first_losing_proxy = {}
+
         self.generate_players()
         self.generate_storage()
 
@@ -55,12 +58,10 @@ class AuctionGenerator:
             self.results_storage[str(i + 1)]["demand"] = []
             self.results_storage[str(i + 1)]["rym"] = []
 
-            self.results_storage[str(i + 1)]["NoRYM_model_subsidy_min"] = []
             self.results_storage[str(i + 1)]["NoRYM_model_subsidy"] = []
             self.results_storage[str(i + 1)]["NoRYM_model_profit"] = []
             self.results_storage[str(i + 1)]["NoRYM_model_production"] = []
 
-            self.results_storage[str(i + 1)]["RYM_model_subsidy_min"] = []
             self.results_storage[str(i + 1)]["RYM_model_subsidy"] = []
             self.results_storage[str(i + 1)]["RYM_model_profit"] = []
             self.results_storage[str(i + 1)]["RYM_model_production"] = []
@@ -78,9 +79,9 @@ class AuctionGenerator:
                 self.results_storage[str(i + 1)]["slot" + str(ii + 1) + "_subsidy"] = []
                 self.results_storage[str(i + 1)]["slot" + str(ii + 1) + "_profit"] = []
 
-    def generate_parameters(self):
+    def generate_random_parameters(self):
         for i in self.players_dic:
-            """here randim generation should be done differently to prevent different number of players"""
+            """random generation of parameters"""
             ws = random.randint(self.ws_min * 10, self.ws_max * 10) / 10
             other_costs = random.randint(self.oc_min * 100, self.oc_max * 100) / 100
 
@@ -104,7 +105,17 @@ class AuctionGenerator:
 
         self.current_round += 1
 
-    def split_players(self):
+    def input_parameters(self, ws, production, other_costs, lcoe, correction_factor, minimum_bid):
+        for i in self.players_dic:
+            self.players_dic[i].update_parameters(ws=ws, production=production, other_costs=other_costs, lcoe=lcoe,
+                                                  correction_factor=correction_factor, minimum_bid=minimum_bid,
+                                                  rym=self.rym, maximum_bid=self.maximum_bid,
+                                                  demand=self.demand, supply=self.supply,
+                                                  current_round=self.current_round)
+
+        self.current_round += 1
+
+    def split_players_random(self):
         shuffled_players = list(self.players_dic.keys())
         random.shuffle(shuffled_players)
 
@@ -119,22 +130,60 @@ class AuctionGenerator:
             for ii in self.groups[i]:
                 self.players_dic[ii].update_round(current_round=self.current_round, current_group=i)
 
+    def input_split_players(self, groups):
+        self.groups = groups
+
+        for i in groups:
+            for ii in groups[i]:
+                self.players_dic[ii].update_round(current_round=self.current_round, current_group=i)
+
     def update_demand_supply(self, demand, supply):
         self.demand = demand
         self.supply = supply
 
     def evaluate_round_per_group(self):
+        """not taking into account equal bids, shuffling might be introduced"""
         winning_bids = {}
 
+        no_rym_winning_bids_proxy = {}
+        no_rym_first_losing_proxy = {}
+
+        rym_winning_bids_proxy = {}
+        rym_first_losing_proxy = {}
+
+        """Winning bids based on place bids"""
         for i in self.groups:
             placed_bids = {}
             for ii in self.groups[i]:
                 placed_bids[str(ii)] = self.players_dic[ii].my_bid
 
-            """this should be shuffled to deal with equal bids"""
             winning_bids[str(i)] = dict(sorted(placed_bids.items(), key=itemgetter(1))[:self.demand])
 
         self.winning_bids = winning_bids
+
+        """Winning bids based on no rym; i.e. lcoe"""
+        for i in self.groups:
+            bids = {}
+            for ii in self.groups[i]:
+                bids[str(ii)] = self.players_dic[ii].parameters["lcoe"]
+
+            no_rym_winning_bids_proxy[str(i)] = dict(sorted(bids.items(), key=itemgetter(1))[:self.demand])
+            no_rym_first_losing_proxy[str(i)] = dict(sorted(bids.items(), key=itemgetter(1))[self.demand:self.demand+1])
+
+        self.no_rym_winning_bids_proxy = no_rym_winning_bids_proxy
+        self.no_rym_first_losing_proxy = no_rym_first_losing_proxy
+
+        """Winning bids based on rym; i.e. lcoe/correction factor"""
+        for i in self.groups:
+            bids = {}
+            for ii in self.groups[i]:
+                bids[str(ii)] = self.players_dic[ii].parameters["lcoe"]/self.players_dic[ii].parameters["correction_factor"]
+
+            rym_winning_bids_proxy[str(i)] = dict(sorted(bids.items(), key=itemgetter(1))[:self.demand])
+            rym_first_losing_proxy[str(i)] = dict(sorted(bids.items(), key=itemgetter(1))[self.demand:self.demand+1])
+
+        self.rym_winning_bids_proxy = rym_winning_bids_proxy
+        self.rym_first_losing_proxy = rym_first_losing_proxy
 
     def results_to_players(self):
         for i in self.groups:
@@ -156,15 +205,44 @@ class AuctionGenerator:
             self.results_storage[str(i)]["demand"].append(self.demand)
             self.results_storage[str(i)]["rym"].append(self.rym)
 
-            self.results_storage[str(i)]["NoRYM_model_subsidy_min"].append("to be calculated")
-            self.results_storage[str(i)]["NoRYM_model_subsidy"].append("to be calculated")
-            self.results_storage[str(i)]["NoRYM_model_profit"].append("to be calculated")
-            self.results_storage[str(i)]["NoRYM_model_production"].append("to be calculated")
+            no_rym_subsidy_min = 0
+            no_rym_subsidy = 0
+            no_rym_profit = 0
+            no_rym_production = 0
 
-            self.results_storage[str(i)]["RYM_model_subsidy_min"].append("to be calculated")
-            self.results_storage[str(i)]["RYM_model_subsidy"].append("to be calculated")
-            self.results_storage[str(i)]["RYM_model_profit"].append("to be calculated")
-            self.results_storage[str(i)]["RYM_model_production"].append("to be calculated")
+            no_rym_marginal = list(self.no_rym_first_losing_proxy[i].values())[0]
+
+            for ii in self.no_rym_winning_bids_proxy[i]:
+                no_rym_production += self.players_dic[ii].parameters["production"]
+
+            for ii in self.no_rym_winning_bids_proxy[i]:
+                no_rym_subsidy += no_rym_marginal * (self.players_dic[ii].parameters["production"]
+                                                                     / no_rym_production)
+                no_rym_profit += (no_rym_marginal - self.players_dic[ii].parameters["lcoe"]) \
+                                 * (self.players_dic[ii].parameters["production"] / no_rym_production)
+
+            self.results_storage[str(i)]["NoRYM_model_subsidy"].append(no_rym_subsidy)
+            self.results_storage[str(i)]["NoRYM_model_profit"].append(no_rym_profit)
+            self.results_storage[str(i)]["NoRYM_model_production"].append(no_rym_production)
+
+            rym_subsidy = 0
+            rym_profit = 0
+            rym_production = 0
+
+            rym_marginal = list(self.rym_first_losing_proxy[i].values())[0]
+
+            for ii in self.rym_winning_bids_proxy[i]:
+                rym_production += self.players_dic[ii].parameters["production"]
+
+            for ii in self.rym_winning_bids_proxy[i]:
+                rym_subsidy += rym_marginal * (self.players_dic[ii].parameters["production"]
+                                                     / rym_production)
+                rym_profit += (rym_marginal - self.players_dic[ii].parameters["lcoe"]) \
+                                 * (self.players_dic[ii].parameters["production"] / rym_production)
+
+            self.results_storage[str(i)]["RYM_model_subsidy"].append(rym_subsidy)
+            self.results_storage[str(i)]["RYM_model_profit"].append(rym_profit)
+            self.results_storage[str(i)]["RYM_model_production"].append(rym_production)
 
             subsidy = 0
             profit = 0
