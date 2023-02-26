@@ -9,7 +9,7 @@ import pandas as pd
 class AuctionGenerator:
     def __init__(self, active_players=16, rym=0, demand=3, supply=4,
                  maximum_bid=90.3, ws_min=5, ws_max=9, oc_min=0.8, oc_max=1.2,
-                 random_seed=16180339):
+                 ):
 
         self.active_players = active_players
         self.rym = rym
@@ -130,13 +130,6 @@ class AuctionGenerator:
             for ii in self.groups[i]:
                 self.players_dic[ii].update_round(current_round=self.current_round, current_group=i)
 
-    def input_split_players(self, groups):
-        self.groups = groups
-
-        for i in groups:
-            for ii in groups[i]:
-                self.players_dic[ii].update_round(current_round=self.current_round, current_group=i)
-
     def update_demand_supply(self, demand, supply):
         self.demand = demand
         self.supply = supply
@@ -205,7 +198,6 @@ class AuctionGenerator:
             self.results_storage[str(i)]["demand"].append(self.demand)
             self.results_storage[str(i)]["rym"].append(self.rym)
 
-            no_rym_subsidy_min = 0
             no_rym_subsidy = 0
             no_rym_profit = 0
             no_rym_production = 0
