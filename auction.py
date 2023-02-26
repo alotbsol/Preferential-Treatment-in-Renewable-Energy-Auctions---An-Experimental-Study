@@ -27,6 +27,8 @@ class AuctionGenerator:
         self.InputDistribution = DistributionGenerator(min_ws=ws_min, max_ws=ws_max, base_lcoe=50,
                                                        oc_min=oc_min, oc_max=oc_max)
 
+        self.input_parameters_df = pd.DataFrame()
+
         self.number_of_groups = int(active_players / supply)
         self.groups = {}
 
@@ -105,15 +107,42 @@ class AuctionGenerator:
 
         self.current_round += 1
 
-    def input_parameters(self, ws, production, other_costs, lcoe, correction_factor, minimum_bid):
-        for i in self.players_dic:
-            self.players_dic[i].update_parameters(ws=ws, production=production, other_costs=other_costs, lcoe=lcoe,
-                                                  correction_factor=correction_factor, minimum_bid=minimum_bid,
-                                                  rym=self.rym, maximum_bid=self.maximum_bid,
-                                                  demand=self.demand, supply=self.supply,
-                                                  current_round=self.current_round)
+    def store_input_parameters_csv(self, input_df):
+        self.input_parameters_df = input_df
 
+    def input_parameters(self):
         self.current_round += 1
+
+        for i in self.groups:
+            player_slot = 0
+            for player in self.groups[i]:
+                player_slot += 1
+
+                parameters = self.input_parameters_df.loc[(self.input_parameters_df['round'] == self.current_round) &
+                                                 (self.input_parameters_df['group'] == int(i)) &
+                                                 (self.input_parameters_df['player_slot'] == int(player_slot)),
+                                                 ["ws", "other_costs"]]
+
+                ws = parameters.iloc[0]["ws"]
+                other_costs = parameters.iloc[0]["other_costs"]
+
+                """ Loaded from original distributions"""
+                ws_index = self.InputDistribution.distribution["ws"].index(ws)
+
+                production = self.InputDistribution.distribution["production"][ws_index]
+                correction_factor = self.InputDistribution.distribution["correction_factor"][ws_index]
+                lcoe = self.InputDistribution.distribution["lcoe"][ws_index] * other_costs
+
+                if self.rym == 0:
+                    minimum_bid = lcoe
+                else:
+                    minimum_bid = lcoe / correction_factor
+
+                self.players_dic[player].update_parameters(ws=ws, production=production, other_costs=other_costs,
+                                                           lcoe=lcoe, correction_factor=correction_factor,
+                                                           minimum_bid=minimum_bid, rym=self.rym,
+                                                           maximum_bid=self.maximum_bid, demand=self.demand,
+                                                           supply=self.supply, current_round=self.current_round)
 
     def split_players_random(self):
         shuffled_players = list(self.players_dic.keys())
@@ -227,9 +256,10 @@ class AuctionGenerator:
                 rym_production += self.players_dic[ii].parameters["production"]
 
             for ii in self.rym_winning_bids_proxy[i]:
-                rym_subsidy += rym_marginal * (self.players_dic[ii].parameters["production"]
-                                                     / rym_production)
-                rym_profit += (rym_marginal - self.players_dic[ii].parameters["lcoe"]) \
+                rym_subsidy += rym_marginal * self.players_dic[ii].parameters["correction_factor"] * \
+                               (self.players_dic[ii].parameters["production"] / rym_production)
+
+                rym_profit += (rym_marginal * self.players_dic[ii].parameters["correction_factor"] - self.players_dic[ii].parameters["lcoe"]) \
                                  * (self.players_dic[ii].parameters["production"] / rym_production)
 
             self.results_storage[str(i)]["RYM_model_subsidy"].append(rym_subsidy)
@@ -278,6 +308,8 @@ class AuctionGenerator:
 
         df_out = pd.DataFrame.from_dict(self.InputDistribution.distribution)
         df_out.to_excel(writer, sheet_name="parameters")
+
+        self.input_parameters_df.to_excel(writer, sheet_name="input_parameters")
 
         writer.save()
 

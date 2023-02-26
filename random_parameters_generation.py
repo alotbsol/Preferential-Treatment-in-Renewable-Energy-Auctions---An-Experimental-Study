@@ -36,12 +36,8 @@ def generate_random_parameters_to_csv(no_groups=4, plyers_per_group=4, no_rounds
                 parameters_dic["ws"].append(ws)
                 parameters_dic["other_costs"].append(other_costs)
 
-    print(parameters_dic)
-
     df_out = pd.DataFrame.from_dict(parameters_dic)
     df_out.to_csv("{}.csv".format(name))
-
-    print(df_out)
 
 
 if __name__ == '__main__':
