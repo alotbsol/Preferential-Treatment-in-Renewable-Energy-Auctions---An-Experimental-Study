@@ -1,4 +1,5 @@
 from auction import AuctionGenerator
+import pandas as pd
 
 
 def all_parameters():
@@ -27,22 +28,30 @@ def all_parameters():
 
 
 def example_figures():
-    Auctions = AuctionGenerator(active_players=4, rym=0)
-    Auctions.generate_random_parameters()
+    parameters_df = pd.read_csv("scenario_1.csv")
+    distributions_df = pd.read_csv("scenario_1_distribution.csv")
+
+    Auctions = AuctionGenerator(parameters_df=parameters_df,
+                                distributions_df=distributions_df,
+                                active_players=4,
+                                rym=0,)
+
+    Auctions.split_players_random()
+    Auctions.input_parameters_to_players()
+
+    for i in Auctions.players_dic:
+        Auctions.players_dic[i].graph_project_input()
+
+    Auctions = AuctionGenerator(parameters_df=parameters_df,
+                                distributions_df=distributions_df,
+                                active_players=2,
+                                rym=1)
 
     for i in Auctions.players_dic:
         Auctions.players_dic[i].graph_project_input()
 
 
-    Auctions2 = AuctionGenerator(active_players=2, rym=1)
-    Auctions2.generate_random_parameters()
-
-    for i in Auctions2.players_dic:
-        Auctions2.players_dic[i].graph_project_input()
-
-
 if __name__ == '__main__':
-    all_parameters()
-    """example_figures()"""
+    example_figures()
 
 

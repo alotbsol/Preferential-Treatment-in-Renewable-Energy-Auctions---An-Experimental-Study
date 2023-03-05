@@ -12,6 +12,8 @@ class Player:
         self.parameters = {"ws": 0,
                            "production": 0,
                            "other_costs": 0,
+                           "cost_A": 0,
+                           "cost_B": 0,
                            "lcoe": 0,
                            "correction_factor": 0,
                            "minimum_bid": 0}
@@ -45,6 +47,8 @@ class Player:
                         "ws": [],
                         "production": [],
                         "other_costs": [],
+                        "cost_A": [],
+                        "cost_B": [],
                         "lcoe": [],
                         "correction_factor": [],
                         "minimum_bid": [],
@@ -58,9 +62,9 @@ class Player:
         self.distribution_df = ""
 
     def pass_distribution(self, distribution):
-        self.distribution_df = pd.DataFrame.from_dict(distribution)
+        self.distribution_df = distribution
 
-    def update_parameters(self, ws, production, other_costs, lcoe, correction_factor, minimum_bid,
+    def update_parameters(self, ws, production, other_costs, cost_A, cost_B, lcoe, correction_factor, minimum_bid,
                           rym, maximum_bid, demand, supply, current_round):
         """updating project parameters based on new draw from probability distribution, calculation in
         AuctionGenerator class"""
@@ -68,6 +72,8 @@ class Player:
         self.parameters["ws"] = ws
         self.parameters["production"] = production
         self.parameters["other_costs"] = other_costs
+        self.parameters["cost_A"] = cost_A
+        self.parameters["cost_B"] = cost_B
         self.parameters["lcoe"] = lcoe
         self.parameters["correction_factor"] = correction_factor
         self.parameters["minimum_bid"] = minimum_bid
@@ -119,6 +125,8 @@ class Player:
         self.history["ws"].append(self.parameters["ws"])
         self.history["production"].append(self.parameters["production"])
         self.history["other_costs"].append(self.parameters["other_costs"])
+        self.history["cost_A"].append(self.parameters["cost_A"])
+        self.history["cost_B"].append(self.parameters["cost_B"])
         self.history["lcoe"].append(self.parameters["lcoe"])
         self.history["correction_factor"].append(self.parameters["correction_factor"])
         self.history["minimum_bid"].append(self.parameters["minimum_bid"])
