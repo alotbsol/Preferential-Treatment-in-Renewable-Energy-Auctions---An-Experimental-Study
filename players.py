@@ -145,6 +145,7 @@ class Player:
         """graph is saved to the directory not sure how to display it to all players in their workstation"""
         color_map = ["#FFFFFF", "#8497B0"]
 
+        print("rym", self.rym)
         if self.rym == 1:
             plt.figure(self.my_name)
             plt.stackplot(self.distribution_df["ws"], [self.distribution_df["min_lcoe_rym"],
