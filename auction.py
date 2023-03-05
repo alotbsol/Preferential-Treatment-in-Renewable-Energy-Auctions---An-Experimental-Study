@@ -70,7 +70,8 @@ class AuctionGenerator:
                 parameters = self.input_parameters_df.loc[(self.input_parameters_df['round'] == self.current_round) &
                                                  (self.input_parameters_df['group'] == int(i)) &
                                                  (self.input_parameters_df['player_slot'] == int(player_slot)),
-                                                 ["ws", "other_costs", "cost_A", "cost_B", "production", "correction_factor", "lcoe", "minimum_bid_rym"]]
+                                                 ["ws", "other_costs", "cost_A", "cost_B", "production",
+                                                  "correction_factor", "lcoe", "minimum_bid_rym"]]
 
                 if self.rym == 0:
                     minimum_bid = parameters.iloc[0]["lcoe"]
@@ -179,16 +180,32 @@ class AuctionGenerator:
     def change_maximum_bid(self, maximum_bid):
         self.maximum_bid = maximum_bid
 
-    def evaluate_auction(self):
-        pass
-
     def export_everything(self, name="default_export"):
         writer = pd.ExcelWriter("{0}.xlsx".format(name), engine="xlsxwriter")
 
+        """calculating and exporting profit of players"""
+        evaluate_players = {"player": [], "profit": []}
+        for i in self.players_dic:
+            evaluate_players["player"].append(i)
+            evaluate_players["profit"].append(sum(self.players_dic[i].history["profit"]))
+
+        df_out = pd.DataFrame.from_dict(evaluate_players)
+        df_out["%"] = df_out.profit / df_out.profit.sum()
+        df_out.to_excel(writer, sheet_name="evaluation")
+
+        """expoorting all results of all rounds and results per group"""
+        frames = []
         for i in self.results_storage:
             df_out = pd.DataFrame.from_dict(self.results_storage[i])
             df_out.to_excel(writer, sheet_name="group{}".format(i))
 
+            df_out.insert(loc=0, column='group', value=int(i))
+            frames.append(df_out)
+
+        all_data = pd.concat(frames)
+        all_data.to_excel(writer, sheet_name="all_data")
+
+        """expoorting results per player"""
         for i in self.players_dic:
             df_out = pd.DataFrame.from_dict(self.players_dic[i].history)
             df_out.to_excel(writer, sheet_name=str(i))

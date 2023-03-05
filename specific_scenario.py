@@ -27,7 +27,7 @@ def play_scenario(name="", rym=0, maximum_bid=90.3):
         Auctions.change_demand_parameter(demand=demand)
 
         for itteration in range(runs_per_demand_scenario):
-            print("round", itteration)
+            print("demand", demand, "round", itteration)
             Auctions.split_players_random()
             Auctions.input_parameters_to_players()
 
