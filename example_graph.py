@@ -8,7 +8,7 @@ def example_figures():
 
     Auctions = AuctionGenerator(parameters_df=parameters_df,
                                 distributions_df=distributions_df,
-                                active_players=8,
+                                active_players=4,
                                 rym=0,)
 
     Auctions.split_players_random()

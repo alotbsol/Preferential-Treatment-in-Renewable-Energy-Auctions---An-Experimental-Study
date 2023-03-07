@@ -36,6 +36,9 @@ class DistributionGenerator:
                              "correction_factor": [],
                              "extra_correction_factor": [],
                              "lcoe": [],
+                             "cost_A": [],
+                             "cost_B_min": [],
+                             "cost_B_max": [],
                              "min_lcoe": [],
                              "max_lcoe": [],
                              "min_lcoe_rym": [],
@@ -61,6 +64,9 @@ class DistributionGenerator:
             self.distribution["lcoe"].append(i*self.base_lcoe)
 
         for i in self.distribution["lcoe"]:
+            self.distribution["cost_A"].append(i)
+            self.distribution["cost_B_min"].append(i * self.oc_min - i)
+            self.distribution["cost_B_max"].append(i * self.oc_max - i)
             self.distribution["min_lcoe"].append(i * self.oc_min)
             self.distribution["max_lcoe"].append(i * self.oc_max)
 
