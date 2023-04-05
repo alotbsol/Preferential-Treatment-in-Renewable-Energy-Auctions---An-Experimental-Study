@@ -1,5 +1,4 @@
-from auction import AuctionGenerator
-from random_parameters_generation import generate_random_parameters_to_csv
+from theory_calc import AuctionGeneratorTheory
 
 import pandas as pd
 
@@ -15,7 +14,7 @@ def play_scenario(name="", rym=0, maximum_bid=90.3):
     runs_per_demand_scenario = int(parameters_df["round"].max() / len(demand_scenarios))
 
     """"Creating auction class"""
-    Auctions = AuctionGenerator(parameters_df=parameters_df,
+    Auctions = AuctionGeneratorTheory(parameters_df=parameters_df,
                                 distributions_df=distributions_df,
                                 active_players=16,
                                 rym=rym,
@@ -42,16 +41,5 @@ def play_scenario(name="", rym=0, maximum_bid=90.3):
 
 
 if __name__ == '__main__':
-    """creating input csv"""
-    generate_random_parameters_to_csv(random_seed=16180339, name="scenario_1")
-
     """playing scenario"""
-    play_scenario(name="scenario_1", rym=0, maximum_bid=90.3)
-    play_scenario(name="scenario_1", rym=1, maximum_bid=70)
-
-
-
-
-
-
-
+    play_scenario(name="theory_scenario_1", rym=0, maximum_bid=90.3)

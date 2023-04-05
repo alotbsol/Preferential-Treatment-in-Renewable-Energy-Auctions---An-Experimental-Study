@@ -158,7 +158,7 @@ class DistributionGenerator:
 
 def export_data(input_data, name):
     """This function exports any input data to an excel file"""
-    writer = pd.ExcelWriter("{0}.xlsx".format(name), engine="xlsxwriter")
+    writer = pd.ExcelWriter("distributions/{0}.xlsx".format(name), engine="xlsxwriter")
 
     if isinstance(input_data, pd.DataFrame):
         input_data.to_excel(writer, sheet_name="data")

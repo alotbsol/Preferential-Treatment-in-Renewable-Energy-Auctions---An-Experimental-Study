@@ -72,9 +72,9 @@ def generate_random_parameters_to_csv(no_groups=4, plyers_per_group=4, no_rounds
                 parameters_dic["id_scenario"].append(id_scenario)
 
     df_out = pd.DataFrame.from_dict(parameters_dic)
-    df_out.to_csv("{}.csv".format(name))
+    df_out.to_csv("distributions/{}.csv".format(name))
 
-    pd.DataFrame.from_dict(InputDistribution.distribution).to_csv("{}_distribution.csv".format(name))
+    pd.DataFrame.from_dict(InputDistribution.distribution).to_csv("distributions/{}_distribution.csv".format(name))
 
 
 if __name__ == '__main__':

@@ -181,7 +181,7 @@ class AuctionGenerator:
         self.maximum_bid = maximum_bid
 
     def export_everything(self, name="default_export"):
-        writer = pd.ExcelWriter("{0}.xlsx".format(name), engine="xlsxwriter")
+        writer = pd.ExcelWriter("results/{name}.xlsx".format(name=name), engine="xlsxwriter")
 
         """calculating and exporting profit of players"""
         evaluate_players = {"player": [], "profit": []}

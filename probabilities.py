@@ -4,13 +4,12 @@ import pandas as pd
 from distributions import DistributionGenerator
 
 
-def generate_probabiltiy_distribution_to_csv(iterations=10,
-                                             ws_min=5, ws_max=9,
+def generate_probability_distribution_to_csv(ws_min=5, ws_max=9,
                                              oc_min=0.8, oc_max=1.2,
                                              base_lcoe=50,
                                              random_seed=16180339,
                                              name="probability_dist",
-                                              ):
+                                             ):
     random.seed(random_seed)
 
     id_scenario = str(name) + "_seed:" + str(random_seed) + \
@@ -63,7 +62,7 @@ def generate_probabiltiy_distribution_to_csv(iterations=10,
 
             parameters_dic["id_scenario"].append(id_scenario)
 
-    writer = pd.ExcelWriter("{0}.xlsx".format(name), engine="xlsxwriter")
+    writer = pd.ExcelWriter("distributions/{0}.xlsx".format(name), engine="xlsxwriter")
 
     df_out = pd.DataFrame.from_dict(parameters_dic)
 
@@ -81,5 +80,5 @@ def generate_probabiltiy_distribution_to_csv(iterations=10,
 
 
 if __name__ == '__main__':
-    generate_probabiltiy_distribution_to_csv(random_seed=16180339, name="probability_dist", iterations=10000)
+    generate_probability_distribution_to_csv(random_seed=16180339, name="probability_dist")
 
