@@ -4,12 +4,8 @@ from random_parameters_generation import generate_random_parameters_to_csv
 import pandas as pd
 
 
-def play_scenario(name="", rym=0, maximum_bid=90.3):
+def play_scenario(parameters_df, distributions_df, name="", rym=0, maximum_bid=90.3):
     export_name = str(name) + "rym" + str(rym)
-
-    """"loading scenario parameters"""
-    parameters_df = pd.read_csv("distributions/scenario_1.csv")
-    distributions_df = pd.read_csv("distributions/scenario_1_distribution.csv")
 
     demand_scenarios = [1, 3, 1, 3]
     runs_per_demand_scenario = int(parameters_df["round"].max() / len(demand_scenarios))
@@ -46,8 +42,14 @@ if __name__ == '__main__':
     generate_random_parameters_to_csv(random_seed=16180339, name="scenario_1")
 
     """playing scenario"""
-    play_scenario(name="scenario_1", rym=0, maximum_bid=90.3)
-    play_scenario(name="scenario_1", rym=1, maximum_bid=70)
+    for i in [0, 1]:
+        play_scenario(name="scenario_1",
+                      parameters_df=pd.read_csv("distributions/scenario_1.csv"),
+                      distributions_df=pd.read_csv("distributions/scenario_1_distribution.csv"),
+                      rym=i,
+                      maximum_bid=90.3)
+
+
 
 
 
