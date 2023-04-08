@@ -5,12 +5,14 @@ import numpy as np
 
 class DistributionGenerator:
     """This class generates all wind speeds and related parameters, i.e., correction factor and lcoe"""
-    def __init__(self, min_ws=5, max_ws=9, base_lcoe=50, oc_min=0.8, oc_max=1.2):
+    def __init__(self, min_ws=5, max_ws=9, base_lcoe=50, oc_min=0.8, oc_max=1.2, ws_decimals=1):
         self.min_ws = min_ws
         self.max_ws = max_ws
         self.base_lcoe = base_lcoe
         self.oc_min = oc_min
         self.oc_max = oc_max
+
+        self.ws_decimals = ws_decimals
 
         self.hub_height = 128
         self.installed_capacity = 3
@@ -35,14 +37,14 @@ class DistributionGenerator:
                              "site_quality": [],
                              "correction_factor": [],
                              "extra_correction_factor": [],
-                             "lcoe": [],
+                             "cost": [],
                              "cost_A": [],
                              "cost_B_min": [],
                              "cost_B_max": [],
-                             "min_lcoe": [],
-                             "max_lcoe": [],
-                             "min_lcoe_rym": [],
-                             "max_lcoe_rym": [],}
+                             "min_break_even_no_rym": [],
+                             "max_break_even_no_rym": [],
+                             "min_break_even_rym": [],
+                             "max_break_even_rym": []}
 
         self.calc_distribution()
 
@@ -61,23 +63,23 @@ class DistributionGenerator:
             self.distribution["extra_correction_factor"].append(self.calc_extrapolated_correction(input_sq=i))
 
         for i in self.distribution["extra_correction_factor"]:
-            self.distribution["lcoe"].append(i*self.base_lcoe)
+            self.distribution["cost"].append(i*self.base_lcoe)
 
-        for i in self.distribution["lcoe"]:
+        for i in self.distribution["cost"]:
             self.distribution["cost_A"].append(i)
             self.distribution["cost_B_min"].append(i * self.oc_min - i)
             self.distribution["cost_B_max"].append(i * self.oc_max - i)
-            self.distribution["min_lcoe"].append(i * self.oc_min)
-            self.distribution["max_lcoe"].append(i * self.oc_max)
+            self.distribution["min_break_even_no_rym"].append(i * self.oc_min)
+            self.distribution["max_break_even_no_rym"].append(i * self.oc_max)
 
-        for i in range(0, len(self.distribution["lcoe"])):
-            self.distribution["min_lcoe_rym"].append(self.distribution["lcoe"][i]/
+        for i in range(0, len(self.distribution["cost"])):
+            self.distribution["min_break_even_rym"].append(self.distribution["cost"][i]/
                                                      self.distribution["correction_factor"][i] * self.oc_min)
-            self.distribution["max_lcoe_rym"].append(self.distribution["lcoe"][i]/
+            self.distribution["max_break_even_rym"].append(self.distribution["cost"][i]/
                                                      self.distribution["correction_factor"][i] * self.oc_max)
 
     def create_ws_dist(self):
-        scale = 10
+        scale = 10 ** self.ws_decimals
 
         generated_list = [i for i in range(self.min_ws*scale, self.max_ws*scale + 1)]
         generated_list = [i/scale for i in generated_list]

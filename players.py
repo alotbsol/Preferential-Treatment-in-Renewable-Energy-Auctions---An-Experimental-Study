@@ -11,9 +11,10 @@ class Player:
                            "other_costs": 0,
                            "cost_A": 0,
                            "cost_B": 0,
-                           "lcoe": 0,
+                           "cost": 0,
                            "correction_factor": 0,
-                           "minimum_bid": 0}
+                           "break_even_bid": 0,
+                           "percentile": 0}
 
         self.current_round = 0
         self.current_group = 0
@@ -41,14 +42,16 @@ class Player:
                         "supply": [],
                         "demand": [],
                         "rym": [],
+                        "maximum_bid": [],
                         "ws": [],
                         "production": [],
                         "other_costs": [],
                         "cost_A": [],
                         "cost_B": [],
-                        "lcoe": [],
+                        "cost": [],
                         "correction_factor": [],
-                        "minimum_bid": [],
+                        "break_even_bid": [],
+                        "percentile": [],
                         "bid": [],
                         "subsidy": [],
                         "profit": [],
@@ -56,13 +59,8 @@ class Player:
                         "lowest_suc": [],
                         }
 
-        self.distribution_df = ""
-
-    def pass_distribution(self, distribution):
-        self.distribution_df = distribution
-
-    def update_parameters(self, ws, production, other_costs, cost_A, cost_B, lcoe, correction_factor, minimum_bid,
-                          rym, maximum_bid, demand, supply, current_round):
+    def update_parameters(self, ws, production, other_costs, cost_A, cost_B, cost, correction_factor, break_even_bid,
+                          percentile, rym, maximum_bid, demand, supply, current_round):
         """updating project parameters based on new draw from probability distribution, calculation in
         AuctionGenerator class"""
 
@@ -71,9 +69,10 @@ class Player:
         self.parameters["other_costs"] = other_costs
         self.parameters["cost_A"] = cost_A
         self.parameters["cost_B"] = cost_B
-        self.parameters["lcoe"] = lcoe
+        self.parameters["cost"] = cost
         self.parameters["correction_factor"] = correction_factor
-        self.parameters["minimum_bid"] = minimum_bid
+        self.parameters["break_even_bid"] = break_even_bid
+        self.parameters["percentile"] = percentile
 
         self.rym = rym
         self.maximum_bid = maximum_bid
@@ -89,7 +88,7 @@ class Player:
 
     def place_random_bid(self):
         """random bidding for checking purpuses only; not used in real experiment"""
-        self.my_bid = random.randint(round(self.parameters["minimum_bid"] * 100), round(self.maximum_bid * 100)) / 100
+        self.my_bid = random.randint(round(self.parameters["break_even_bid"] * 100), round(self.maximum_bid * 100)) / 100
         self.update_subsidy_profit()
 
     def update_subsidy_profit(self):
@@ -101,7 +100,7 @@ class Player:
         else:
             self.potential_subsidy = "error"
 
-        self.potential_profit = self.potential_subsidy - self.parameters["lcoe"]
+        self.potential_profit = self.potential_subsidy - self.parameters["break_even_bid"]
 
     def update_round(self, current_round, current_group):
         """setting number of round, currently not in use"""
@@ -119,14 +118,16 @@ class Player:
         self.history["supply"].append(supply)
         self.history["demand"].append(demand)
         self.history["rym"].append(rym)
+        self.history["maximum_bid"].append(self.maximum_bid)
         self.history["ws"].append(self.parameters["ws"])
         self.history["production"].append(self.parameters["production"])
         self.history["other_costs"].append(self.parameters["other_costs"])
         self.history["cost_A"].append(self.parameters["cost_A"])
         self.history["cost_B"].append(self.parameters["cost_B"])
-        self.history["lcoe"].append(self.parameters["lcoe"])
+        self.history["cost"].append(self.parameters["cost"])
         self.history["correction_factor"].append(self.parameters["correction_factor"])
-        self.history["minimum_bid"].append(self.parameters["minimum_bid"])
+        self.history["break_even_bid"].append(self.parameters["break_even_bid"])
+        self.history["percentile"].append(self.parameters["percentile"])
         self.history["bid"].append(self.my_bid)
 
         self.subsidy = self.potential_subsidy * win

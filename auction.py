@@ -6,9 +6,9 @@ import pandas as pd
 
 
 class AuctionGenerator:
-    def __init__(self, parameters_df="", distributions_df="",
+    def __init__(self, parameters_df="",
                  active_players=16, rym=0, demand=3, supply=4,
-                 maximum_bid=90.3):
+                 ):
 
         self.active_players = active_players
         self.rym = rym
@@ -16,10 +16,7 @@ class AuctionGenerator:
         self.demand = demand
         self.supply = supply
 
-        self.maximum_bid = maximum_bid
-
         self.input_parameters_df = parameters_df
-        self.distributions_df = distributions_df
 
         self.number_of_groups = int(active_players / supply)
         self.groups = {}
@@ -36,7 +33,6 @@ class AuctionGenerator:
     def generate_players(self):
         for i in range(1, self.active_players + 1):
             self.players_dic["player{0}".format(i)] = Player(my_name="player{0}".format(i))
-            self.players_dic["player{0}".format(i)].pass_distribution(self.distributions_df)
 
     def generate_storage(self):
         for i in range(self.number_of_groups):
@@ -71,23 +67,31 @@ class AuctionGenerator:
                                                  (self.input_parameters_df['group'] == int(i)) &
                                                  (self.input_parameters_df['player_slot'] == int(player_slot)),
                                                  ["ws", "other_costs", "cost_A", "cost_B", "production",
-                                                  "correction_factor", "lcoe", "minimum_bid_rym"]]
+                                                  "correction_factor", "cost",
+                                                  "break_even_bid_no_rym", "break_even_bid_rym",
+                                                  "percentile_no_rym", "percentile_rym",
+                                                  "max_bid_no_rym", "max_bid_rym"]]
 
                 if self.rym == 0:
-                    minimum_bid = parameters.iloc[0]["lcoe"]
+                    break_even_bid = parameters.iloc[0]["break_even_bid_no_rym"]
+                    maximum_bid = parameters.iloc[0]["max_bid_no_rym"]
+                    percentile = parameters.iloc[0]["percentile_no_rym"]
                 else:
-                    minimum_bid = parameters.iloc[0]["minimum_bid_rym"]
+                    break_even_bid = parameters.iloc[0]["break_even_bid_rym"]
+                    maximum_bid = parameters.iloc[0]["max_bid_rym"]
+                    percentile = parameters.iloc[0]["percentile_rym"]
 
                 self.players_dic[player].update_parameters(ws=parameters.iloc[0]["ws"],
                                                            production=parameters.iloc[0]["production"],
                                                            other_costs=parameters.iloc[0]["other_costs"],
                                                            cost_A=parameters.iloc[0]["cost_A"],
                                                            cost_B=parameters.iloc[0]["cost_B"],
-                                                           lcoe=parameters.iloc[0]["lcoe"],
+                                                           cost=parameters.iloc[0]["cost"],
                                                            correction_factor=parameters.iloc[0]["correction_factor"],
-                                                           minimum_bid=minimum_bid,
+                                                           break_even_bid=break_even_bid,
+                                                           percentile=percentile,
                                                            rym=self.rym,
-                                                           maximum_bid=self.maximum_bid,
+                                                           maximum_bid=maximum_bid,
                                                            demand=self.demand,
                                                            supply=self.supply,
                                                            current_round=self.current_round)
@@ -210,7 +214,6 @@ class AuctionGenerator:
             df_out = pd.DataFrame.from_dict(self.players_dic[i].history)
             df_out.to_excel(writer, sheet_name=str(i))
 
-        self.distributions_df.to_excel(writer, sheet_name="distributions")
         self.input_parameters_df.to_excel(writer, sheet_name="input_parameters")
 
         writer.save()

@@ -3,24 +3,19 @@ from theory_calc import AuctionGeneratorTheory
 import pandas as pd
 
 
-def play_scenario(name="", rym=0, maximum_bid=90.3):
-    export_name = str(name) + "rym" + str(rym)
-
-    """"loading scenario parameters"""
-    parameters_df = pd.read_csv("distributions/scenario_1.csv")
-    distributions_df = pd.read_csv("distributions/scenario_1_distribution.csv")
+def play_scenario(parameters_df, name="", rym=0,):
+    export_name = str(name)
 
     demand_scenarios = [1, 3, 1, 3]
     runs_per_demand_scenario = int(parameters_df["round"].max() / len(demand_scenarios))
 
     """"Creating auction class"""
     Auctions = AuctionGeneratorTheory(parameters_df=parameters_df,
-                                distributions_df=distributions_df,
                                 active_players=16,
                                 rym=rym,
                                 demand=3,
                                 supply=4,
-                                maximum_bid=maximum_bid)
+                                )
 
     for demand in demand_scenarios:
         Auctions.change_demand_parameter(demand=demand)
@@ -42,4 +37,4 @@ def play_scenario(name="", rym=0, maximum_bid=90.3):
 
 if __name__ == '__main__':
     """playing scenario"""
-    play_scenario(name="theory_scenario_1", rym=0, maximum_bid=90.3)
+    play_scenario(name="theory_scenario_1", parameters_df=pd.read_csv("distributions/scenario_1.csv"))

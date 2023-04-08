@@ -4,7 +4,7 @@ from random_parameters_generation import generate_random_parameters_to_csv
 import pandas as pd
 
 
-def play_scenario(parameters_df, distributions_df, name="", rym=0, maximum_bid=90.3):
+def play_scenario(parameters_df, name="", rym=0):
     export_name = str(name) + "rym" + str(rym)
 
     demand_scenarios = [1, 3, 1, 3]
@@ -12,12 +12,10 @@ def play_scenario(parameters_df, distributions_df, name="", rym=0, maximum_bid=9
 
     """"Creating auction class"""
     Auctions = AuctionGenerator(parameters_df=parameters_df,
-                                distributions_df=distributions_df,
                                 active_players=16,
                                 rym=rym,
                                 demand=3,
-                                supply=4,
-                                maximum_bid=maximum_bid)
+                                supply=4)
 
     for demand in demand_scenarios:
         Auctions.change_demand_parameter(demand=demand)
@@ -45,9 +43,8 @@ if __name__ == '__main__':
     for i in [0, 1]:
         play_scenario(name="scenario_1",
                       parameters_df=pd.read_csv("distributions/scenario_1.csv"),
-                      distributions_df=pd.read_csv("distributions/scenario_1_distribution.csv"),
                       rym=i,
-                      maximum_bid=90.3)
+                      )
 
 
 
