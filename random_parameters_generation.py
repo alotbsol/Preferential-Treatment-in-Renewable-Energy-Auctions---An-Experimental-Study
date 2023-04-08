@@ -6,7 +6,7 @@ from distributions import DistributionGenerator
 from all_parameters_generation import generate_all_parameters_combination
 
 
-def generate_random_parameters_to_csv(no_groups=4, plyers_per_group=4, no_rounds=100,
+def generate_random_parameters(no_groups=4, plyers_per_group=4, no_rounds=100,
                                       ws_min=5, ws_max=9,
                                       oc_min=0.8, oc_max=1.2,
                                       ws_decimals=1,
@@ -103,9 +103,34 @@ def generate_random_parameters_to_csv(no_groups=4, plyers_per_group=4, no_rounds
                 parameters_dic["id_scenario"].append(id_scenario)
 
     df_out = pd.DataFrame.from_dict(parameters_dic)
-    df_out.to_csv("distributions/{}.csv".format(name))
+    return df_out
 
-    pd.DataFrame.from_dict(InputDistribution.distribution).to_csv("distributions/{}_distribution.csv".format(name))
+
+def generate_random_parameters_to_csv(no_groups=4, plyers_per_group=4, no_rounds=100,
+                                      ws_min=5, ws_max=9,
+                                      oc_min=0.8, oc_max=1.2,
+                                      ws_decimals=1,
+                                      oc_decimals=2,
+                                      base_lcoe=50,
+                                      max_bid_no_rym=90.3,
+                                      max_bid_rym=70,
+                                      random_seed=16180339,
+                                      name="scenario_x",
+                                      ):
+
+    df_out = generate_random_parameters(no_groups=no_groups, plyers_per_group=plyers_per_group, no_rounds=no_rounds,
+                                      ws_min=ws_min, ws_max=ws_max,
+                                      oc_min=oc_min, oc_max=oc_max,
+                                      ws_decimals=ws_decimals,
+                                      oc_decimals=oc_decimals,
+                                      base_lcoe=base_lcoe,
+                                      max_bid_no_rym=max_bid_no_rym,
+                                      max_bid_rym=max_bid_rym,
+                                      random_seed=random_seed,
+                                      name=name,
+                                      )
+
+    df_out.to_csv("distributions/{}.csv".format(name))
 
 
 if __name__ == '__main__':
