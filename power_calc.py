@@ -32,8 +32,10 @@ def play_scenario(parameters_df, demand=1, rym=0,):
     return Auctions.results_storage
 
 
-def power_calc():
-    writer = pd.ExcelWriter("distributions/{0}.xlsx".format("power_calc"), engine="xlsxwriter")
+def power_calc(rounds_per_treatment=50):
+    writer = pd.ExcelWriter("distributions/{0}_rounds_{rounds}.xlsx".format("power_calc",
+                                                                          rounds=str(rounds_per_treatment)),
+                            engine="xlsxwriter")
 
     for ii in [1, 3]:
         power_results_subsidy = {"t": [],
@@ -43,17 +45,18 @@ def power_calc():
                                  }
 
         for i in range(0, 100):
-            scenario_parameters = generate_random_parameters(no_groups=1, plyers_per_group=4, no_rounds=50,
-                                                         ws_min=5, ws_max=9,
-                                                         oc_min=0.8, oc_max=1.2,
-                                                         ws_decimals=1,
-                                                         oc_decimals=2,
-                                                         base_lcoe=50,
-                                                         max_bid_no_rym=90.3,
-                                                         max_bid_rym=70,
-                                                         random_seed=i,
-                                                         name="scenario_x",
-                                                         )
+            scenario_parameters = generate_random_parameters(no_groups=1, plyers_per_group=4,
+                                                             no_rounds=rounds_per_treatment,
+                                                             ws_min=5, ws_max=9,
+                                                             oc_min=0.8, oc_max=1.2,
+                                                             ws_decimals=1,
+                                                             oc_decimals=2,
+                                                             base_lcoe=50,
+                                                             max_bid_no_rym=90.3,
+                                                             max_bid_rym=70,
+                                                             random_seed=i,
+                                                             name="scenario_x",
+                                                             )
 
             """playing scenario"""
             results = (play_scenario(parameters_df=scenario_parameters, demand=ii))
@@ -80,4 +83,6 @@ def power_calc():
 
 
 if __name__ == '__main__':
-    power_calc()
+    power_calc(rounds_per_treatment=25)
+    power_calc(rounds_per_treatment=50)
+
