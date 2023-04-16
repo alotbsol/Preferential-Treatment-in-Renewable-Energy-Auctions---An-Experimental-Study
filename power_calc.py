@@ -47,7 +47,7 @@ def power_calc(rounds_per_treatment=50):
                                  }
 
         for i in range(0, 100):
-            scenario_parameters = generate_random_parameters(no_groups=1, plyers_per_group=4,
+            sample_parameters = generate_random_parameters(no_groups=1, plyers_per_group=4,
                                                              no_rounds=rounds_per_treatment,
                                                              ws_min=5, ws_max=9,
                                                              oc_min=0.8, oc_max=1.2,
@@ -57,11 +57,11 @@ def power_calc(rounds_per_treatment=50):
                                                              max_bid_no_rym=90.3,
                                                              max_bid_rym=70,
                                                              random_seed=i,
-                                                             name="scenario_x",
+                                                             name="sample_x",
                                                              )
 
             """playing scenario"""
-            results = (play_scenario(parameters_df=scenario_parameters, demand=ii))
+            results = (play_scenario(parameters_df=sample_parameters, demand=ii))
 
             results_subsidy_no_rym = results["1"]["NoRYM_model_subsidy"]
             results_subsidy_rym = results["1"]["RYM_model_subsidy"]
@@ -100,7 +100,7 @@ def power_calc_samples(rounds_per_treatment=50):
             rand_gen = random.Random()
             random_seed = rand_gen.randint(1, 1000000)
 
-            scenario_parameters = generate_random_parameters(no_groups=1, plyers_per_group=4,
+            sample_parameters = generate_random_parameters(no_groups=1, plyers_per_group=4,
                                                              no_rounds=rounds_per_treatment,
                                                              ws_min=5, ws_max=9,
                                                              oc_min=0.8, oc_max=1.2,
@@ -110,10 +110,10 @@ def power_calc_samples(rounds_per_treatment=50):
                                                              max_bid_no_rym=90.3,
                                                              max_bid_rym=70,
                                                              random_seed=random_seed,
-                                                             name="scenario_x",
+                                                             name="sample_x",
                                                              )
 
-            results = (play_scenario(parameters_df=scenario_parameters, demand=demand))
+            results = (play_scenario(parameters_df=sample_parameters, demand=demand))
 
             results_subsidy_no_rym = sum(results["1"]["NoRYM_model_subsidy"]) / len(results["1"]["NoRYM_model_subsidy"])
             results_subsidy_rym = sum(results["1"]["RYM_model_subsidy"]) / len(results["1"]["RYM_model_subsidy"])
@@ -180,24 +180,25 @@ def power_calc_samples_4groups(rounds_per_treatment=50, no_groups=4):
                                    }
 
         for iteration in range(0, 500):
-            print("rounds_per_treatment", rounds_per_treatment, "demand", demand, "sampling", iteration + 1, "out of 500")
+            print("rounds_per_treatment", rounds_per_treatment, "demand", demand, "sampling", iteration + 1,
+                  "out of 500")
             rand_gen = random.Random()
             random_seed = rand_gen.randint(1, 1000000)
 
-            scenario_parameters = generate_random_parameters(no_groups=no_groups, plyers_per_group=4,
-                                                             no_rounds=rounds_per_treatment,
-                                                             ws_min=5, ws_max=9,
-                                                             oc_min=0.8, oc_max=1.2,
-                                                             ws_decimals=1,
-                                                             oc_decimals=2,
-                                                             base_lcoe=50,
-                                                             max_bid_no_rym=90.3,
-                                                             max_bid_rym=70,
-                                                             random_seed=random_seed,
-                                                             name="scenario_x",
-                                                             )
+            sample_parameters = generate_random_parameters(no_groups=no_groups, plyers_per_group=4,
+                                                           no_rounds=rounds_per_treatment,
+                                                           ws_min=5, ws_max=9,
+                                                           oc_min=0.8, oc_max=1.2,
+                                                           ws_decimals=1,
+                                                           oc_decimals=2,
+                                                           base_lcoe=50,
+                                                           max_bid_no_rym=90.3,
+                                                           max_bid_rym=70,
+                                                           random_seed=random_seed,
+                                                           name="sample_x",
+                                                           )
 
-            results = (play_scenario(parameters_df=scenario_parameters, demand=demand, active_players=16))
+            results = (play_scenario(parameters_df=sample_parameters, demand=demand, active_players=16))
 
             results_subsidy_no_rym = []
             results_subsidy_rym = []

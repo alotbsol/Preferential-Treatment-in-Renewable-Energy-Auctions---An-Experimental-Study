@@ -11,7 +11,7 @@ def generate_all_parameters_combination(ws_min=5, ws_max=9,
                                                name="probability_dist",
                                                ):
 
-    id_scenario = str(name) + \
+    id_sample = str(name) + \
                   "_ws_min_" + str(ws_min) +"_ws_max_" + str(ws_max) \
                   +"_base_lcoe_"+ str(base_lcoe) + \
                   "_oc_min_" + str(oc_min) + "_oc_max_" + str(oc_max)
@@ -34,7 +34,7 @@ def generate_all_parameters_combination(ws_min=5, ws_max=9,
                       "break_even_no_rym": [],
                       "correction_factor": [],
                       "break_even_rym": [],
-                      "id_scenario": [],
+                      "id_sample": [],
                       }
 
     current_round = 0
@@ -66,7 +66,7 @@ def generate_all_parameters_combination(ws_min=5, ws_max=9,
             parameters_dic["correction_factor"].append(correction_factor)
             parameters_dic["break_even_rym"].append(cost/correction_factor)
 
-            parameters_dic["id_scenario"].append(id_scenario)
+            parameters_dic["id_sample"].append(id_sample)
 
     df_out = pd.DataFrame.from_dict(parameters_dic)
 

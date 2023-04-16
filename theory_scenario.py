@@ -37,4 +37,4 @@ def play_scenario(parameters_df, name="", rym=0,):
 
 if __name__ == '__main__':
     """playing scenario"""
-    play_scenario(name="theory_scenario_1", parameters_df=pd.read_csv("distributions/scenario_1.csv"))
+    play_scenario(name="theory_sample_1", parameters_df=pd.read_csv("distributions/sample_1.csv"))

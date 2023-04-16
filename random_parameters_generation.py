@@ -7,22 +7,22 @@ from all_parameters_generation import generate_all_parameters_combination
 
 
 def generate_random_parameters(no_groups=4, plyers_per_group=4, no_rounds=100,
-                                      ws_min=5, ws_max=9,
-                                      oc_min=0.8, oc_max=1.2,
-                                      ws_decimals=1,
-                                      oc_decimals=2,
-                                      base_lcoe=50,
-                                      max_bid_no_rym=90.3,
-                                      max_bid_rym=70,
-                                      random_seed=16180339,
-                                      name="scenario_x",
-                                      ):
+                               ws_min=5, ws_max=9,
+                               oc_min=0.8, oc_max=1.2,
+                               ws_decimals=1,
+                               oc_decimals=2,
+                               base_lcoe=50,
+                               max_bid_no_rym=90.3,
+                               max_bid_rym=70,
+                               random_seed=16180339,
+                               name="sample_x",
+                               ):
     random.seed(random_seed)
 
-    id_scenario = str(name) + "_seed:" + str(random_seed) + \
-                  "_ws_min_" + str(ws_min) +"_ws_max_" + str(ws_max) \
-                  +"_base_lcoe_"+ str(base_lcoe) + \
-                  "_oc_min_" + str(oc_min) + "_oc_max_"+ str(oc_max)
+    id_sample = str(name) + "_seed:" + str(random_seed) + \
+                  "_ws_min_" + str(ws_min) + "_ws_max_" + str(ws_max) \
+                  + "_base_lcoe_" + str(base_lcoe) + \
+                  "_oc_min_" + str(oc_min) + "_oc_max_" + str(oc_max)
 
     ws_scale = 10 ** ws_decimals
     oc_scale = 10 ** oc_decimals
@@ -46,15 +46,15 @@ def generate_random_parameters(no_groups=4, plyers_per_group=4, no_rounds=100,
                       "cost_A": [],
                       "cost_B": [],
                       "production": [],
-                      "id_scenario": [],
+                      "id_sample": [],
                       }
 
     all_parameters_distribution = generate_all_parameters_combination(
-                                               ws_min=ws_min, ws_max=ws_max,
-                                               oc_min=oc_min, oc_max=oc_max,
-                                               ws_decimals=ws_decimals,
-                                               oc_decimals=oc_decimals,
-                                               base_lcoe=base_lcoe,)
+        ws_min=ws_min, ws_max=ws_max,
+        oc_min=oc_min, oc_max=oc_max,
+        ws_decimals=ws_decimals,
+        oc_decimals=oc_decimals,
+        base_lcoe=base_lcoe, )
 
     current_round = 0
 
@@ -100,7 +100,7 @@ def generate_random_parameters(no_groups=4, plyers_per_group=4, no_rounds=100,
                 parameters_dic["max_bid_no_rym"].append(max_bid_no_rym)
                 parameters_dic["max_bid_rym"].append(max_bid_rym)
 
-                parameters_dic["id_scenario"].append(id_scenario)
+                parameters_dic["id_sample"].append(id_sample)
 
     df_out = pd.DataFrame.from_dict(parameters_dic)
     return df_out
@@ -115,28 +115,25 @@ def generate_random_parameters_to_csv(no_groups=4, plyers_per_group=4, no_rounds
                                       max_bid_no_rym=90.3,
                                       max_bid_rym=70,
                                       random_seed=16180339,
-                                      name="scenario_x",
+                                      name="sample_x",
                                       ):
-
     df_out = generate_random_parameters(no_groups=no_groups, plyers_per_group=plyers_per_group, no_rounds=no_rounds,
-                                      ws_min=ws_min, ws_max=ws_max,
-                                      oc_min=oc_min, oc_max=oc_max,
-                                      ws_decimals=ws_decimals,
-                                      oc_decimals=oc_decimals,
-                                      base_lcoe=base_lcoe,
-                                      max_bid_no_rym=max_bid_no_rym,
-                                      max_bid_rym=max_bid_rym,
-                                      random_seed=random_seed,
-                                      name=name,
-                                      )
+                                        ws_min=ws_min, ws_max=ws_max,
+                                        oc_min=oc_min, oc_max=oc_max,
+                                        ws_decimals=ws_decimals,
+                                        oc_decimals=oc_decimals,
+                                        base_lcoe=base_lcoe,
+                                        max_bid_no_rym=max_bid_no_rym,
+                                        max_bid_rym=max_bid_rym,
+                                        random_seed=random_seed,
+                                        name=name,
+                                        )
 
     df_out.to_csv("distributions/{}.csv".format(name))
 
 
 if __name__ == '__main__':
-    generate_random_parameters_to_csv(random_seed=16180339, name="scenario_1")
-    generate_random_parameters_to_csv(random_seed=1618033, name="scenario_2")
-    generate_random_parameters_to_csv(random_seed=161803, name="scenario_3")
-    generate_random_parameters_to_csv(random_seed=16180, name="scenario_4")
-
-
+    generate_random_parameters_to_csv(random_seed=16180339, name="sample_1")
+    generate_random_parameters_to_csv(random_seed=1618033, name="sample_2")
+    generate_random_parameters_to_csv(random_seed=161803, name="sample_3")
+    generate_random_parameters_to_csv(random_seed=16180, name="sample_4")

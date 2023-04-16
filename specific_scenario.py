@@ -37,12 +37,12 @@ def play_scenario(parameters_df, name="", rym=0):
 
 if __name__ == '__main__':
     """creating input csv"""
-    generate_random_parameters_to_csv(random_seed=16180339, name="scenario_1")
+    generate_random_parameters_to_csv(random_seed=16180339, name="sample_1")
 
     """playing scenario"""
     for i in [0, 1]:
-        play_scenario(name="scenario_1",
-                      parameters_df=pd.read_csv("distributions/scenario_1.csv"),
+        play_scenario(name="sample_1",
+                      parameters_df=pd.read_csv("distributions/sample_1.csv"),
                       rym=i,
                       )
 
