@@ -51,10 +51,12 @@ class AuctionGeneratorTheory:
 
             self.results_storage[str(i + 1)]["NoRYM_model_subsidy"] = []
             self.results_storage[str(i + 1)]["NoRYM_model_profit"] = []
+            self.results_storage[str(i + 1)]["NoRYM_model_profit_without_production"] = []
             self.results_storage[str(i + 1)]["NoRYM_model_production"] = []
 
             self.results_storage[str(i + 1)]["RYM_model_subsidy"] = []
             self.results_storage[str(i + 1)]["RYM_model_profit"] = []
+            self.results_storage[str(i + 1)]["RYM_model_profit_without_production"] = []
             self.results_storage[str(i + 1)]["RYM_model_production"] = []
 
             self.results_storage[str(i + 1)]["players_subsidy"] = []
@@ -225,6 +227,7 @@ class AuctionGeneratorTheory:
             # Theory calc
             no_rym_subsidy = 0
             no_rym_profit = 0
+            no_rym_profit_without_production= 0
             no_rym_production = 0
 
             no_rym_marginal = list(self.no_rym_first_losing_proxy[i].values())[0]
@@ -237,13 +240,16 @@ class AuctionGeneratorTheory:
                                                      / no_rym_production)
                 no_rym_profit += (no_rym_marginal - self.players_dic[ii].parameters["cost"]) \
                                  * (self.players_dic[ii].parameters["production"] / no_rym_production)
+                no_rym_profit_without_production += (no_rym_marginal - self.players_dic[ii].parameters["cost"])
 
             self.results_storage[str(i)]["NoRYM_model_subsidy"].append(no_rym_subsidy)
             self.results_storage[str(i)]["NoRYM_model_profit"].append(no_rym_profit)
+            self.results_storage[str(i)]["NoRYM_model_profit_without_production"].append(no_rym_profit_without_production)
             self.results_storage[str(i)]["NoRYM_model_production"].append(no_rym_production)
 
             rym_subsidy = 0
             rym_profit = 0
+            rym_profit_without_production = 0
             rym_production = 0
 
             rym_marginal = list(self.rym_first_losing_proxy[i].values())[0]
@@ -259,8 +265,11 @@ class AuctionGeneratorTheory:
                                self.players_dic[ii].parameters["cost"]) \
                               * (self.players_dic[ii].parameters["production"] / rym_production)
 
+                rym_profit_without_production += (rym_marginal * self.players_dic[ii].parameters["correction_factor"] - self.players_dic[ii].parameters["cost"])
+
             self.results_storage[str(i)]["RYM_model_subsidy"].append(rym_subsidy)
             self.results_storage[str(i)]["RYM_model_profit"].append(rym_profit)
+            self.results_storage[str(i)]["RYM_model_profit_without_production"].append(rym_profit_without_production)
             self.results_storage[str(i)]["RYM_model_production"].append(rym_production)
 
     def change_rym_parameter(self, rym):
