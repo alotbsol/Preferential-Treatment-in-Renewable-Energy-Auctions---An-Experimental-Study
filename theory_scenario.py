@@ -6,8 +6,13 @@ import pandas as pd
 def play_scenario(parameters_df, name="", rym=0,):
     export_name = str(name)
 
-    demand_scenarios = [1, 3, 1, 3]
-    runs_per_demand_scenario = int(parameters_df["round"].max() / len(demand_scenarios))
+    # specific demand scenario setup with 16 rounds per demand scenario
+    demand_scenarios = [1, 3, 1, 3, 1, 3]
+    runs_per_demand_scenario = 16
+
+    # can be used for arbitrarily long csv
+    # runs_per_demand_scenario = int(parameters_df["round"].max() / len(demand_scenarios))
+
 
     """"Creating auction class"""
     Auctions = AuctionGeneratorTheory(parameters_df=parameters_df,
