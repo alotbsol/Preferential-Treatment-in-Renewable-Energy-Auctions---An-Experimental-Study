@@ -3,11 +3,11 @@ from theory_calc import AuctionGeneratorTheory
 import pandas as pd
 
 
-def play_scenario(parameters_df, name="", rym=0,):
+def play_scenario(parameters_df, name="", rym=0, demand_scenarios=[1, 3, 1, 3, 1, 3]):
     export_name = str(name)
 
     # specific demand scenario setup with 16 rounds per demand scenario
-    demand_scenarios = [1, 3, 1, 3, 1, 3]
+    demand_scenarios = demand_scenarios
     runs_per_demand_scenario = 16
 
     # can be used for arbitrarily long csv
@@ -42,7 +42,7 @@ def play_scenario(parameters_df, name="", rym=0,):
 
 if __name__ == '__main__':
     """playing scenarios"""
-    play_scenario(name="theory_sample_1", parameters_df=pd.read_csv("distributions/sample_1.csv"))
-    play_scenario(name="theory_sample_2", parameters_df=pd.read_csv("distributions/sample_2.csv"))
-    play_scenario(name="theory_sample_3", parameters_df=pd.read_csv("distributions/sample_3.csv"))
-    play_scenario(name="theory_sample_4", parameters_df=pd.read_csv("distributions/sample_4.csv"))
+    play_scenario(name="theory_sample_1", parameters_df=pd.read_csv("distributions/sample_1.csv"), demand_scenarios=[1, 3, 1, 3, 1, 3])
+    play_scenario(name="theory_sample_2", parameters_df=pd.read_csv("distributions/sample_2.csv"), demand_scenarios=[3, 1, 3, 1, 3, 1])
+    play_scenario(name="theory_sample_3", parameters_df=pd.read_csv("distributions/sample_3.csv"), demand_scenarios=[1, 3, 1, 3, 1, 3])
+    play_scenario(name="theory_sample_4", parameters_df=pd.read_csv("distributions/sample_4.csv"), demand_scenarios=[3, 1, 3, 1, 3, 1])
